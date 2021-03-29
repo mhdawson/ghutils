@@ -67,7 +67,24 @@ function lister (auth, urlbase, options, callback) {
       }
 
       if (data.length) {
-        retdata.push.apply(retdata, data)
+        if (data[0] && options.labels) {
+          // sniff the first entry to make sure
+          // is has the expected label, temporary work around
+          let properlyLabelled = false;
+          if (data[0].labels) {
+            data[0].labels.forEach((label) => {
+              if (label.name === options.labels) {
+                properlyLabelled =true;
+              }
+            });
+          }
+
+          if (properlyLabelled) {
+            retdata.push.apply(retdata, data)
+          }
+        } else {
+          retdata.push.apply(retdata, data)
+        }
       }
 
       const nextUrl = getNextUrl(res.headers.link)
